@@ -23,7 +23,7 @@ public class Controller {
     public ResponseEntity getLocation(@RequestParam(required = false) String ip, Boolean from_me, HttpServletRequest request) throws IOException, GeoIp2Exception {
         try{
             String used_ip = ip;
-            if(from_me!=null && from_me){//o navegador envia automaticamente
+            if(from_me!=null && from_me){//não funciona localmente, apenas em produção
                 if(request.getHeader("X-FORWARDED-FOR")!=null && !request.getHeader("X-FORWARDED-FOR").isBlank()){
                     used_ip = request.getHeader("X-FORWARDED-FOR");
                 }else{
