@@ -19,10 +19,14 @@ import java.net.UnknownHostException;
 @RequestMapping("/look_ip")
 public class Controller {
     @GetMapping
-    public ResponseEntity getLocation(@RequestParam String ip, @RequestParam Boolean from_me, HttpServletRequest request) throws IOException, GeoIp2Exception {
+    public ResponseEntity getLocation(@RequestParam(required = false) String ip, Boolean from_me, HttpServletRequest request) throws IOException, GeoIp2Exception {
         String used_ip = ip;
-        if(from_me){//o navegador envia automaticamente
-            used_ip = request.getHeader("X-FORWARDED-FOR");
+        if(from_me!=null && from_me){//o navegador envia automaticamente
+            if(request.getHeader("X-FORWARDED-FOR")!=null && !request.getHeader("X-FORWARDED-FOR").isBlank()){
+                used_ip = request.getHeader("X-FORWARDED-FOR");
+            }else{
+                used_ip = request.getRemoteAddr();
+            }
         }
         File database = new File(Main.class.getClassLoader().getResource("GeoLite2-City.mmdb").getFile());
         DatabaseReader reader = new DatabaseReader.Builder(database).build();
@@ -31,6 +35,12 @@ public class Controller {
         System.out.println(response);
         System.out.println(response.getCity().getName());
         System.out.println(response.getSubdivisions().get(0).getIsoCode());
-        return ResponseEntity.ok().body(new LocationResponse(response.getSubdivisions().get(0).getIsoCode(),response.getCity().getName()));
+        return ResponseEntity.ok().body(
+                new LocationResponse(
+                        response.getSubdivisions().get(0).getIsoCode(),
+                        response.getCity().getName(),
+                        response.getLocation().getLatitude(),
+                        response.getLocation().getLongitude())
+                );
     }
 }

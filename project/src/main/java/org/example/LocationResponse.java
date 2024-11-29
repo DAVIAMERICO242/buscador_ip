@@ -8,4 +8,6 @@ import lombok.Data;
 public class LocationResponse {
     String region_code;
     String city;
+    Double latitude;
+    Double longitude;
 }
