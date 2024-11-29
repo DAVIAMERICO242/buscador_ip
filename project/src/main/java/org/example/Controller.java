@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -29,7 +30,7 @@ public class Controller {
                     used_ip = request.getRemoteAddr();
                 }
             }
-            File database = new File(Main.class.getClassLoader().getResource("GeoLite2-City.mmdb").getFile());
+            InputStream database = Main.class.getClassLoader().getResourceAsStream("GeoLite2-City.mmdb");
             DatabaseReader reader = new DatabaseReader.Builder(database).build();
             InetAddress ipAddress = InetAddress.getByName(used_ip);//ipv4 e ipv6
             CityResponse response = reader.city(ipAddress);
