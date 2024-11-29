@@ -19,6 +19,13 @@ import java.net.UnknownHostException;
 @RestController
 @RequestMapping("/look_ip")
 public class Controller {
+
+    private DatabaseReader reader = new DatabaseReader.Builder(Main.class.getClassLoader().getResourceAsStream("GeoLite2-City.mmdb")).build();
+
+    public Controller() throws IOException {
+
+    }
+
     @GetMapping
     public ResponseEntity getLocation(@RequestParam(required = false) String ip, Boolean from_me, HttpServletRequest request) throws IOException, GeoIp2Exception {
         try{
@@ -30,10 +37,8 @@ public class Controller {
                     used_ip = request.getRemoteAddr();
                 }
             }
-            InputStream database = Main.class.getClassLoader().getResourceAsStream("GeoLite2-City.mmdb");
-            DatabaseReader reader = new DatabaseReader.Builder(database).build();
             InetAddress ipAddress = InetAddress.getByName(used_ip);//ipv4 e ipv6
-            CityResponse response = reader.city(ipAddress);
+            CityResponse response = this.reader.city(ipAddress);
             System.out.println(response);
             System.out.println(response.getCity().getName());
             System.out.println(response.getSubdivisions().get(0).getIsoCode());
