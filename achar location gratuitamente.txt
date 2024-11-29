@@ -1,0 +1,5 @@
+1-criar conta no geolite2
+
+2-downloadar no painel da conta o banco de dados
+
+3-criar uma api que usa a biblioteca deles que le o banco de dados e retorna as informações de locations
